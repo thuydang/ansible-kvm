@@ -1,0 +1,67 @@
+---
+#- hosts: controller-01.infra.openstack.eng.rdu2.redhat.com
+#- hosts: localhost
+#- hosts: devops-os-controller
+#- hosts: devops-os-storage
+#- hosts: devops-os-compute
+- hosts: devops-openstack-prod
+  remote_user: root
+  tasks:
+
+#  - name: install needed network manager libs
+#    yum: name={{ item }} state=installed
+#    with_items:
+##      - libnm-qt-devel.x86_64
+#      - nm-connection-editor.x86_64
+#      - libsemanage-python
+#      - policycoreutils-python
+#      - rsync
+
+##### Working with all cloud nodes - Teaming
+
+  - name: try nmcli add team - cname only & ip4 gw4
+    nmcli: type=team cname={{item.cname}} ip4={{item.ip4}} gw4={{item.gw4}} state=present
+    with_items:
+      - "{{nmcli_team}}"
+##
+##  - name: try nmcli mod team - quoted dns array state=modify enabled=no
+##    nmcli: cname={{item.cname}} dns4={{item.dns4}} type=team
+##    with_items:
+##      - {cname: 'cname-test', dns4: '"8.8.8.8 8.8.4.4"'}
+##      - {cname: 'cname-pest', dns4: '"8.8.8.8 8.8.4.4"'}
+#
+  - name: try nmcli add teams-slave
+    nmcli: type=team-slave cname={{item.cname}} ifname={{item.ifname}} master={{item.master}} state=present
+    with_items:
+      - "{{nmcli_team_slave}}"
+
+###### Working with all cloud nodes - Bonding
+#
+#  - name: try nmcli add bond - cname only & ip4 gw4 mode
+#    nmcli: type=bond cname={{item.cname}} ip4={{item.ip4}} gw4={{item.gw4}} mode={{item.mode}} state=present
+#    with_items:
+#      - "{{nmcli_bond}}"
+#
+##  - name: try nmcli mod team - quoted dns array state=modify enabled=no
+##    nmcli: cname={{item.cname}} dns4={{item.dns4}} type=team
+##    with_items:
+##      - {cname: 'cname-test', dns4: '"8.8.8.8 8.8.4.4"'}
+##      - {cname: 'cname-pest', dns4: '"8.8.8.8 8.8.4.4"'}
+#
+#  - name: try nmcli add bond-slave
+#    nmcli: type=bond-slave cname={{item.cname}} ifname={{item.ifname}} master={{item.master}} state=present
+#    with_items:
+#      - "{{nmcli_bond_slave}}"
+
+##### Working with all cloud nodes - Ethernet
+
+#  - name: nmcli add Ethernet - cname only & ip4 gw4
+#    nmcli: type=ethernet cname={{item.cname}} ip4={{item.ip4}} gw4={{item.gw4}} state=present
+#    with_items:
+#      - "{{nmcli_ethernet}}"
+
+#  - name: try nmcli mod Ethernet - quoted dns array state=modify enabled=no
+#    nmcli: cname={{item.cname}} dns4={{item.dns4}} type=team
+#    with_items:
+#      - {cname: 'cname-test', dns4: '"8.8.8.8 8.8.4.4"'}
+#      - {cname: 'cname-pest', dns4: '"8.8.8.8 8.8.4.4"'}
